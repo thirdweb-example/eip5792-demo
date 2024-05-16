@@ -7,10 +7,10 @@ import { Toaster } from "react-hot-toast";
 
 const inter = Inter({ subsets: ["latin"] });
 
-// export const metadata: Metadata = {
-//   title: "EIP-5792 with thirdweb SDK",
-//   description: "Use EIP-5792 with the thirdweb SDK.",
-// };
+export const metadata: Metadata = {
+  title: "EIP-5792 with thirdweb SDK",
+  description: "Use EIP-5792 with the thirdweb SDK.",
+};
 
 export default function RootLayout({
   children,

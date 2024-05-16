@@ -9,7 +9,6 @@ import {
   ConnectButton,
   useActiveAccount,
   useActiveWallet,
-  useActiveWalletChain,
   useInvalidateContractQuery,
 } from "thirdweb/react";
 import { shortenAddress } from "thirdweb/utils";
@@ -100,7 +99,7 @@ export default function Transactions() {
       }
     });
 
-    if (nftBalance && nftBalance < 1n) {
+    if (nftBalance !== undefined && nftBalance < 1n) {
       const mintTx = claimTo({
         contract: NFT,
         to: account.address,
@@ -109,7 +108,7 @@ export default function Transactions() {
       preparedCalls.push(mintTx);
     }
 
-    await sendCalls({
+    const result = await sendCalls({
       wallet,
       calls: preparedCalls,
       capabilities: {
@@ -135,7 +134,11 @@ export default function Transactions() {
           <ConnectButton
             client={client}
             chain={CHAIN}
-            wallets={[createWallet("com.coinbase.wallet")]}
+            wallets={[
+              createWallet("com.coinbase.wallet", {
+                walletConfig: { options: "smartWalletOnly" },
+              }),
+            ]}
             appMetadata={{
               name: "thirdweb SDK EIP-5792",
             }}
@@ -150,18 +153,20 @@ export default function Transactions() {
           </button>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:grid-cols-3 justify-center">
-          {!nftBalanceLoading && nftBalance && nftBalance < 1n && (
-            <div className="flex flex-col h-24 items-center justify-center border border-zinc-800 p-4 rounded-lg hover:bg-zinc-900 transition-colors hover:border-zinc-700">
-              <Image
-                src={twLogo}
-                alt="Thirdweb"
-                width={366}
-                height={221}
-                className="w-auto h-6 mb-2"
-              />
-              <h2 className="text-lg font-bold">Mint NFT</h2>
-            </div>
-          )}
+          {!nftBalanceLoading &&
+            nftBalance !== undefined &&
+            nftBalance < 1n && (
+              <div className="flex flex-col h-24 items-center justify-center border border-zinc-800 p-4 rounded-lg hover:bg-zinc-900 transition-colors hover:border-zinc-700">
+                <Image
+                  src={twLogo}
+                  alt="Thirdweb"
+                  width={366}
+                  height={221}
+                  className="w-auto h-6 mb-2"
+                />
+                <h2 className="text-lg font-bold">Mint NFT</h2>
+              </div>
+            )}
           {rawCalls.map((call, idx) => (
             <TransactionCard key={idx} {...call} />
           ))}

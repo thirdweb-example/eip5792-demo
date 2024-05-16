@@ -1,6 +1,3 @@
-import Image from "next/image";
-import thirdwebIcon from "@public/thirdweb.svg";
-
 export default function Title() {
   return (
     <div className="flex flex-col items-center">
@@ -13,7 +10,7 @@ export default function Title() {
         </span>
       </h1>
 
-      <p className="text-zinc-300 text-base">
+      <p className="text-zinc-300 text-center text-base">
         Make sure you&apos;re using Coinbase Smart Wallet and have the browser
         extension disabled.
       </p>
