@@ -11,6 +11,7 @@
   "dependencies": {
     "@headlessui/react": "^2.0.3",
     "@radix-ui/react-icons": "^1.3.0",
+    "lucide-react": "^0.378.0",
     "next": "14.1.0",
     "react": "^18",
     "react-dom": "^18",
@@ -18,14 +19,14 @@
     "thirdweb": "0.0.0-dev-bbf32b162a869e957fc5061354bf1e3f4c2c6a70-20240516181555"
   },
   "devDependencies": {
-    "typescript": "^5",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.0.1",
+    "eslint": "^8",
+    "eslint-config-next": "14.1.0",
     "postcss": "^8",
     "tailwindcss": "^3.3.0",
-    "eslint": "^8",
-    "eslint-config-next": "14.1.0"
+    "typescript": "^5"
   }
 }
