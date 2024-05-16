@@ -5,7 +5,6 @@ import { PlusCircledIcon } from "@radix-ui/react-icons";
 
 import { useCallback, useState } from "react";
 import { Address, prepareTransaction, toTokens } from "thirdweb";
-import { baseSepolia } from "thirdweb/chains";
 import {
   ConnectButton,
   useActiveAccount,
@@ -22,7 +21,7 @@ import twLogo from "@public/tw.png";
 import Image from "next/image";
 import Modal from "./Modal";
 import { transfer } from "thirdweb/extensions/erc20";
-import { DEMO_TOKEN, NFT } from "@/contracts";
+import { DEMO_TOKEN, NFT, CHAIN } from "@/contracts";
 import toast from "react-hot-toast";
 import { useReadContract } from "thirdweb/react";
 import { balanceOf, claimTo } from "thirdweb/extensions/erc721";
@@ -45,7 +44,6 @@ const tokens: Token[] = [
 export default function Transactions() {
   const wallet = useActiveWallet();
   const account = useActiveAccount();
-  const chain = useActiveWalletChain();
   const invalidateContract = useInvalidateContractQuery();
   const [modalOpen, setModalOpen] = useState(false);
   const [rawCalls, setCalls] = useState<
@@ -58,7 +56,6 @@ export default function Transactions() {
       owner: wallet?.getAccount()?.address || "",
     }
   );
-  console.log("nft", nftBalance);
 
   const addTransaction = useCallback(
     (tx: { to: Address; value: bigint; token: number }) => {
@@ -67,8 +64,21 @@ export default function Transactions() {
     []
   );
 
+  const waitThenInvalidate = useCallback(() => {
+    setTimeout(() => {
+      invalidateContract({
+        chainId: CHAIN.id,
+        contractAddress: DEMO_TOKEN.address,
+      });
+      invalidateContract({
+        chainId: CHAIN.id,
+        contractAddress: NFT.address,
+      });
+    }, 5000);
+  }, [invalidateContract]);
+
   const execute = useCallback(async () => {
-    if (!wallet || !chain || !account) return;
+    if (!wallet || !account) return;
 
     const preparedCalls = rawCalls.map((call) => {
       if (call.token.label === "ETH") {
@@ -76,7 +86,7 @@ export default function Transactions() {
           to: call.to,
           value: call.value,
           client,
-          chain,
+          chain: CHAIN,
         });
       } else if (call.token.label === "DEMO") {
         return transfer({
@@ -90,7 +100,7 @@ export default function Transactions() {
       }
     });
 
-    if (nftBalance && nftBalance < 5n) {
+    if (nftBalance && nftBalance < 1n) {
       const mintTx = claimTo({
         contract: NFT,
         to: account.address,
@@ -104,22 +114,13 @@ export default function Transactions() {
       calls: preparedCalls,
       capabilities: {
         paymasterService: {
-          url: `https://${chain.id}.bundler.thirdweb.com/${client.clientId}`,
+          url: `https://${CHAIN.id}.bundler.thirdweb.com/${client.clientId}`,
         },
       },
     });
     setCalls([]);
-    setTimeout(() => {
-      invalidateContract({
-        chainId: chain.id,
-        contractAddress: DEMO_TOKEN.address,
-      });
-      invalidateContract({
-        chainId: chain.id,
-        contractAddress: NFT.address,
-      });
-    }, 3000);
-  }, [wallet, rawCalls, chain, account, invalidateContract, nftBalance]);
+    waitThenInvalidate();
+  }, [wallet, rawCalls, account, waitThenInvalidate, nftBalance]);
 
   return (
     <>
@@ -133,7 +134,7 @@ export default function Transactions() {
         <div className="flex gap-2 justify-center">
           <ConnectButton
             client={client}
-            chain={baseSepolia}
+            chain={CHAIN}
             wallets={[createWallet("com.coinbase.wallet")]}
             appMetadata={{
               name: "thirdweb SDK EIP-5792",
@@ -149,7 +150,7 @@ export default function Transactions() {
           </button>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:grid-cols-3 justify-center">
-          {!nftBalanceLoading && nftBalance && nftBalance < 5n && (
+          {!nftBalanceLoading && nftBalance && nftBalance < 1n && (
             <div className="flex flex-col h-24 items-center justify-center border border-zinc-800 p-4 rounded-lg hover:bg-zinc-900 transition-colors hover:border-zinc-700">
               <Image
                 src={twLogo}
