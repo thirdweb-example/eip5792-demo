@@ -6,7 +6,7 @@ import MintButton from "./MintButton";
 export default function Header() {
   return (
     <div className="flex fixed top-0 w-screen">
-      <div className="max-w-7xl px-8 flex w-full items-center justify-between mx-auto">
+      <div className="max-w-7xl lg:px-8 px-4 flex w-full items-center justify-between mx-auto">
         <Image
           src={thirdwebIcon}
           alt=""
