@@ -11,7 +11,7 @@ import {
 
 export default function MintButton() {
   const account = useActiveAccount();
-  const { data: demoBalance, refetch } = useReadContract(balanceOf, {
+  const { data: demoBalance } = useReadContract(balanceOf, {
     contract: DEMO_TOKEN,
     address: account?.address || "",
   });
@@ -27,9 +27,6 @@ export default function MintButton() {
             to: account?.address || "",
             amount: 1000,
           });
-        }}
-        onTransactionConfirmed={() => {
-          refetch();
         }}
         style={{
           borderRadius: "6px !important",

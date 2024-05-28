@@ -9,10 +9,9 @@ import {
   ConnectButton,
   useActiveAccount,
   useActiveWallet,
-  useInvalidateContractQuery,
 } from "thirdweb/react";
 import { shortenAddress } from "thirdweb/utils";
-import { sendCalls } from "thirdweb/wallets/eip5792";
+import { useSendCalls } from "thirdweb/wallets/eip5792";
 import { createWallet } from "thirdweb/wallets";
 import demoIcon from "@public/demo.png";
 import ethIcon from "@public/eth.svg";
@@ -43,7 +42,6 @@ const tokens: Token[] = [
 export default function Transactions() {
   const wallet = useActiveWallet();
   const account = useActiveAccount();
-  const invalidateContract = useInvalidateContractQuery();
   const [modalOpen, setModalOpen] = useState(false);
   const [rawCalls, setCalls] = useState<
     { to: Address; value: bigint; token: Token }[]
@@ -55,6 +53,7 @@ export default function Transactions() {
       owner: wallet?.getAccount()?.address || "",
     }
   );
+  const { mutateAsync: sendCalls } = useSendCalls({ client });
 
   const addTransaction = useCallback(
     (tx: { to: Address; value: bigint; token: number }) => {
@@ -62,19 +61,6 @@ export default function Transactions() {
     },
     []
   );
-
-  const waitThenInvalidate = useCallback(() => {
-    setTimeout(() => {
-      invalidateContract({
-        chainId: CHAIN.id,
-        contractAddress: DEMO_TOKEN.address,
-      });
-      invalidateContract({
-        chainId: CHAIN.id,
-        contractAddress: NFT.address,
-      });
-    }, 5000);
-  }, [invalidateContract]);
 
   const execute = useCallback(async () => {
     if (!wallet || !account) return;
@@ -108,7 +94,7 @@ export default function Transactions() {
       preparedCalls.push(mintTx);
     }
 
-    const result = await sendCalls({
+    await sendCalls({
       wallet,
       calls: preparedCalls,
       capabilities: {
@@ -118,8 +104,7 @@ export default function Transactions() {
       },
     });
     setCalls([]);
-    waitThenInvalidate();
-  }, [wallet, rawCalls, account, waitThenInvalidate, nftBalance]);
+  }, [wallet, rawCalls, account, sendCalls, nftBalance]);
 
   return (
     <>

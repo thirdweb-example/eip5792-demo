@@ -16,7 +16,7 @@
     "react": "^18",
     "react-dom": "^18",
     "react-hot-toast": "^2.4.1",
-    "thirdweb": "0.0.0-dev-bbf32b162a869e957fc5061354bf1e3f4c2c6a70-20240516181555"
+    "thirdweb": "0.0.0-dev-de5cbbcfe35ed6f6aac2431bcae162caa7a98a53-20240528203851"
   },
   "devDependencies": {
     "@types/node": "^20",
