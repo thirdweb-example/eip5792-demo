@@ -99,7 +99,8 @@ export default function Transactions() {
       calls: preparedCalls,
       capabilities: {
         paymasterService: {
-          url: `https://${CHAIN.id}.bundler.thirdweb.com/${client.clientId}`,
+          // We proxy the paymaster requests to filter them using any domain restrictions configured in the thirdweb dashboard
+          url: `${document.location.origin}/paymaster?chainId=${CHAIN.id}&clientId=${client.clientId}`,
         },
       },
     });
@@ -115,7 +116,7 @@ export default function Transactions() {
         tokens={tokens}
       />
       <div className="flex w-full flex-col gap-8">
-        <div className="flex gap-2 justify-center">
+        <div className="flex gap-4 justify-center">
           <ConnectButton
             client={client}
             chain={CHAIN}
