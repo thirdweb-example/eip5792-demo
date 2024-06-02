@@ -100,6 +100,8 @@ await sendCalls({
   },
 });
 ```
+> [!NOTE]
+> It's recommended to setup a proxy route for your thirdweb paymaster url (shown above) so you can properly restrict the domains that utilize it.
 
 ### `useCapabilities`
 
