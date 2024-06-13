@@ -12,6 +12,9 @@ export async function POST(request: NextRequest) {
     {
       method: "POST",
       body: JSON.stringify(data),
+      headers: {
+        "x-secret-key": process.env.SECRET_KEY!,
+      },
     }
   );
   console.log("Paymaster result", res);
