@@ -15,5 +15,6 @@ export async function POST(request: NextRequest) {
       headers: request.headers,
     }
   );
+  console.log("Paymaster result", res);
   return res;
 }
