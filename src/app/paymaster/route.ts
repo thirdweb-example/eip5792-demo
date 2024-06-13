@@ -12,7 +12,6 @@ export async function POST(request: NextRequest) {
     {
       method: "POST",
       body: JSON.stringify(data),
-      headers: request.headers,
     }
   );
   console.log("Paymaster result", res);
