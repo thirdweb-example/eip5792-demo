@@ -1,12 +1,10 @@
 import { type NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {
-  console.log("Request received", request);
   const searchParams = request.nextUrl.searchParams;
   const chainId = searchParams.get("chainId");
   const clientId = searchParams.get("clientId");
   const data = await request.json();
-  console.log("Request body", data);
   const headers = request.headers;
   headers.set("x-secret-key", process.env.SECRET_KEY!);
   const res = await fetch(
@@ -17,6 +15,5 @@ export async function POST(request: NextRequest) {
       headers,
     }
   );
-  console.log("Paymaster result", res);
   return res;
 }
